@@ -14,4 +14,4 @@ It's a space where you build up your computing knowledge.
 ## Develop
 1. 파이토치 트랜스포머 컴퓨터비전 (Pytorch Transformer ComputerVision)
 2. 쿠버네티스와 머신러닝 (Kubernetes ML)
-
+3. AI/LLM 모델 관련 개념과 응용 과정 (AI/LLM Model, RAG, MMM)
