@@ -54,7 +54,9 @@ Marketing Mix Model+Gemini Use Case
 
 
 ## LightWeightMMM
-- MMM에 베이지안 접근 방식을 사용하여
+- LightweightMMM은 사용자가 쉽게 MMM을 교육하고 채널 속성 정보를 얻을 수 있는 경량 베이지안 마케팅 믹스 모델링(MMM) 라이브러리입니다. 라이브러리에는 미디어 할당을 최적화하고 현장에서 일반적인 그래프를 그리는 기능도 포함되어 있습니다.
+
+- Python3으로 구축되었으며 Numpyro 및 JAX를 사용합니다.
 
 
 
