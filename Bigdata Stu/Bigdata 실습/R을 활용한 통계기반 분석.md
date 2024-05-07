@@ -1,0 +1,432 @@
+```R
+#  2. R의 기초 #page79
+#  1) CSV 파일 불러오기 
+data <- read.csv("C:/data/Data1.csv",header=TRUE,sep=",")
+
+#  2) 변수 선택과 사례 선택 #page80
+# (1) 변수 선택
+# 변수의 위치를 아는 방법 
+names(data)
+
+# 변수 선택 #page81
+# ① 문자형 벡터 만들기 
+select_variables <- c("Gender1", "EDU1", "BF", "BM", "Happiness", "Peace")
+select_variables
+# ② 숫자형 벡터 만들기
+select_variables <- c(21:26)
+# ③ 문자형 혹은 숫자형 벡터에 입력된 변수를 데이터에서 선택
+select_data <- data[select_variables]
+# ④ 그 외 벡터 만드는 법
+select_data <- data[,c(21:26)] 
+select_data <- data[c(21:26)]
+select_data <- subset(data, select = c(21:26))
+select_data <- subset(data, select = c("Gender1", "EDU1", "BF", "BM", 
+                                       "Happiness", "Peace"))
+# 선택된 데이터 보기
+View(select_data)
+
+# (2) 케이스 선택 #page82
+test1 <- select_data[which(select_data$Happiness>=3 & select_data$Peace>=3),]
+test1
+# View(test1)
+
+
+
+# 3.통계분석을 위한 데이터 변환 #page84
+# CSV 파일 불러오기 
+# data <- read.csv("C:/data/Data1.csv",header=TRUE,sep=",")
+# 벡터로 변수 선택하기
+test <- data[c(1:22)]
+test
+# View(test)
+
+#  1) 새 변수 만들기
+# (1) 데이터프레임명$변수명을 사용하는 방법 
+test$BF <- (test$Q1 + test$Q2 + test$Q3 + test$Q4 + test$Q5) / 5
+
+# (2) attach 함수를 사용하는 방법 #page85
+attach(test)
+test$BM <- (Q6 + Q7 + Q8 + Q9 + Q10) / 5
+detach(test)
+
+# (3) transform 함수를 사용하는 방법
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+detach(test)
+
+#  2) 재부호화
+# (1) 그룹변수 만들기
+# ① 평화 변수 만들기 #page87
+attach(test)
+test$Peace <- (Q16 + Q17 + Q18 + Q19 + Q20) / 5
+detach(test)
+
+# ② 평화 변수의 분할표 
+table(test$Peace)
+prop.table(table(test$Peace))
+
+# ③ 평화 변수를 3집단으로 분류 #page89
+attach(test)
+test$grp.Peace[Peace >= min(Peace) & Peace <= 3.2] <- 1
+test$grp.Peace[Peace >= 3.3 & Peace <= 3.8] <- 2
+test$grp.Peace[Peace >= 3.9 & Peace <= max(Peace)] <- 3
+detach(test)
+table(test$grp.Peace)
+
+# (2) 새 변수로 재부호화하기 #page90
+# Gender1의 속성을 ‘남자’, ‘여자’로 재부호화 
+attach(test)
+test$Gender[Gender1 == 10] <- 1     # 남자
+test$Gender[Gender1 == 20] <- 2     # 여자
+detach(test)
+table(test$Gender)
+
+# (3) 변수의 방향을 역으로 재부호화하기 
+# 반대로 측정된 변수의 값을 재부호화
+attach(test)
+test$EDU[EDU1==4] <-1
+test$EDU[EDU1==3] <-2
+test$EDU[EDU1==2] <-3
+test$EDU[EDU1==1] <-4
+detach(test)
+table(test$EDU)
+
+# (4) 두 독립변수의 변수값을 교차시켜 하나의 집단변수 만들기 #page91
+# 두 독립변수의 변수값을 교차시켜 하나의 집단변수 만들기
+attach(test)
+test$grp.Gender.Peace[Gender==1 & grp.Peace==1] <-11
+test$grp.Gender.Peace[Gender==1 & grp.Peace==2] <-12
+test$grp.Gender.Peace[Gender==1 & grp.Peace==3] <-13
+test$grp.Gender.Peace[Gender==2 & grp.Peace==1] <-21
+test$grp.Gender.Peace[Gender==2 & grp.Peace==2] <-22
+test$grp.Gender.Peace[Gender==2 & grp.Peace==3] <-23
+detach(test)
+
+#  3) 결측값 지정하기 #page92
+# 결측값 지정 
+test$Gender[test$Gender == 99] <- NA
+test$EDU[test$EDU == 99] <- NA
+table(test$Gender); table(test$EDU)
+sum(test$EDU); sum(test$EDU, na.rm=TRUE)
+# summary(test$Gender); summary(test$EDU)
+# 결측값 제거하기
+test <- test[complete.cases(test),] 
+
+#  4) 데이터 병합하기 #page93
+# (1) 변수를 병합하는 경우
+data$ID <- seq.int(nrow(data))
+data1 <- data[,c(27,21,22,23)] 
+data2 <- data[,c(27,24,25,26)]
+str(data1); str(data2)
+mergedata <- merge(data1, data2, by="ID")
+str(mergedata)
+
+#  5) 데이터 분할하기 
+# (1) 일부 변수를 추출하는 경우 
+# data의 첫 세 변수만 추출하는 경우 1 #page94
+newdata <- data[,c(1:3)]
+newdata
+
+# data의 세 변수만 추출하는 경우 2 #page95
+var <- c("Gender1", "EDU1", "BF")
+newdata <- data[var]
+newdata
+
+# (2) 일부 사례만 선택하는 경우 
+# data의 처음 5개 사례만 추출하는 경우
+newdata <- data[1:5,]
+newdata
+
+# 남자만 선택하는 경우
+newdata <- data[which(data$Gender==10),]
+newdata
+# 남자 중에서 평화 정도가 낮은 경우만 선택하는 경우
+newdata <- data[which(data$Gender==10 & data$Peace<=3.2),]
+newdata
+
+# (3) subset 함수를 사용한 경우 #page96
+# subset 함수를 사용하여 사례와 변수를 추출하는 경우
+newdata <- subset(data, Happiness>=3 & Peace>=3, select =
+                    c("Gender1", "EDU1", "BF", "BM", "Happiness", "Peace"))
+# newdata <- subset(data, Happiness>=3 & Peace>=3, select = c(Gender1:Peace))
+
+#  7) 변수의 이름과 레이블 설정 
+# names() 변수 이름을 모두 출력하는 함수
+names(test1)
+# 특정 변수 이름을 변경할 때(변수 이름 기준)
+names(test1)[names(test1) == "Happiness"] <- "test_Happiness"
+names(test1)
+# 특정 변수 이름을 변경할 때(위치 기준)
+colnames(test1)[1] <- "new_Gender" # 1번째 column 변수명을 변경
+names(test1)
+# 전체 변수 이름을 지정하여 변경할 때 
+# 변수의 개수와 이름의 개수가 같아야 한다.
+abc <- c("Q11", "Q12", "Q13")
+mydata <- data[abc]
+mydata
+names(mydata) <- c("apple", "banana", "cherry") 
+str(mydata)
+
+
+
+# 4.기술통계
+# 1) 빈도표 출력
+# (1) table 함수를 이용한 빈도표 출력 #page97
+# table 함수를 이용한 방법
+table(test$EDU)
+
+# (2) ‘plyr’ 패키지를 이용한 빈도표 출력 #page98
+# 'plyr'패키지를 이용하는 방법
+# install.packages("plyr")
+library(plyr)
+count(test, 'EDU')
+
+# 2) 기술통계량 출력
+# (1) summary 함수를 이용한 기술통계량 출력 #page100
+summary(test$EDU)
+
+# (2) ‘psych’패키지를 이용한 기술통계량 출력 #page101
+install.packages("psych")
+library(psych)
+describe(test$EDU)
+# install.packages("Hmisc")
+# library(Hmisc)
+# describe(test$EDU)
+
+
+
+# 5.교차분석
+# 1) 교차분석의 분석 방법
+# ① Peace 속성을 ‘낮음’, ‘보통’, ‘높음’ 응답으로 재부호화 #page102
+# 앞 장에서 ‘새 변수 만들기’를 통해 해당 변수를 만들어 놓았다.
+# attach(test)
+# test$grp.Peace[Peace >= min(Peace) & Peace <= 3.2] <- 1
+# test$grp.Peace[Peace >= 3.3 & Peace <= 3.8] <- 2
+# test$grp.Peace[Peace >= 3.9 & Peace <= max(Peace)] <- 3
+# detach(test)
+
+# ② 두 변수의 값에 따른 사례수 출력 #page103
+devi02_1.re <- table(test$grp.Peace, test$Gender)
+devi02_1.re
+
+# 참고 - 변수값을 변수값 설명으로 대체 #p105
+attach(test)
+test$grp.Peace_1[grp.Peace==1] <- "1_평화 낮음"
+test$grp.Peace_1[grp.Peace==2] <- "2_평화 보통"
+test$grp.Peace_1[grp.Peace==3] <- "3_평화 높음"
+test$Gender_1[Gender==1] <- "1_남자"
+test$Gender_1[Gender==2] <- "2_여자"
+detach(test)
+
+# 변수값을 변수값 설명으로 대체한 변수로 교차표 출력
+devi02.re<- table(test$grp.Peace_1, test$Gender_1)
+devi02.re
+
+# ③ 두 변수의 값에 따른 주변합계를 출력
+margin.table(devi02.re)      # grp.Peace_1과 Gender_1 변수의 전체합계
+margin.table(devi02.re, 1)   # grp.Peace_1 변수의 주변 합계
+margin.table(devi02.re, 2)   # Gender_1 변수의 주변 합계
+
+# (2) ‘gmodels’ 패키지를 이용한 교차분석 #page106
+# install.packages("gmodels")
+library(gmodels)
+CrossTable(test$grp.Peace_1, test$Gender_1, digits=2,
+           prop.c=TRUE, prop.r=FALSE, prop.t=FALSE, prop.chisq=FALSE,
+           chisq=TRUE)
+
+
+
+# 6.T검정
+# 1)독립표본 T 검정의 분석 방법
+# ① 행복에 대한 변수를 만들기 #page109
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+detach(test)
+
+# ② 분산 동질성 검증 
+var.test(Happiness ~ Gender, data=test)
+
+# ③ 연구가설 검증 #page110
+t.test(Happiness ~ Gender, var.equal=TRUE, data=test)
+
+# ④ 집단에 따른 기술통계량 #page111
+library(psych)
+describeBy(test$Happiness, test$Gender)
+
+
+
+# 2)짝지어진 T 검증의 분석 방법 #page113
+# ① 변수 만들기 
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+test$Peace <- (Q16 + Q17 + Q18 + Q19 + Q20) / 5
+detach(test)
+
+# ② Paired T-test 
+attach(test)
+t.test(Happiness, Peace, paired = TRUE)
+detach(test)
+
+
+
+# 3)일표본 T 검증의 분석 방법 #page115
+# ① 행복변수 만들기
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+detach(test)
+# ② 일표본 T 검증 
+t.test(test$Happiness, mu=3.5)
+
+
+
+# 7.분산분석
+# 1)일원분산분석
+# ① 교육정도 변수 만들기 #page118
+attach(test)
+test$EDU[EDU1==4] <-1
+test$EDU[EDU1==3] <-2
+test$EDU[EDU1==2] <-3
+test$EDU[EDU1==1] <-4
+detach(test)
+
+# ② 교육정도 변수의 분포 살펴보기 
+cbind(Freq=table(test$EDU),
+      Cum.prop=cumsum(prop.table(table(test$EDU))))
+
+# 독립변수를 문자형 변수로 변환 #page119
+test$EDU_f <- factor(test$EDU, levels=c(1,2,3,4),
+                     labels = c("중졸 이하","고졸 또는 중퇴","대졸 또는 중퇴","대학원 졸업 또는 중퇴"))
+
+# 참고 - 요인 #page120
+test$Gender_f <- factor(test$Gender, labels = c("남", "여"))
+# 범주형자료의 특성
+length(test$Gender_f)
+mode(test$Gender_f)
+levels(test$Gender_f)
+str(test$Gender_f)
+
+# ③ 종속변수 만들기 #page121
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+detach(test)
+
+# ④ 연구가설 검증 
+ano1 <- aov( Happiness ~ EDU_f, data=test )
+anova(ano1)
+
+# ⑤ 집단별 평균값 구하기 #page123
+# ‘psych’ 패키지를 이용한 집단별 평균값 구하기
+library(psych)
+describeBy(test$Happiness, test$EDU)
+
+# ⑥ 사후검증 #page124
+# Tuckey 사후검증
+#install.packages("multcomp")
+library(multcomp)
+tuckey_ano1 <- glht(ano1, linf=mcp(EDU_f="Tukey"))
+summary(tuckey_ano1)
+
+# 2)이원분산분석 #page126
+# ① 성별 변수를 요인(factor)으로 변환하기 
+# test$Gender_f <- factor(test$Gender, levels=c(1,2), labels = c("남자","여자"))
+
+# ② 독립변수의 주효과와 상호작용 효과 1
+tw.ano1a <- aov(Peace ~ Gender_f + EDU_f + Gender_f:EDU_f, data=test)
+anova(tw.ano1a)
+# 독립변수의 주효과와 상호작용 효과 2
+tw.aon1b <- aov(Peace ~ Gender_f + EDU_f + Gender_f*EDU_f, data=test)
+anova(tw.aon1b)
+
+# 독립변수의 주효과 만을 출력함 #page128
+tw.ano1c <- aov(Peace ~ Gender_f + EDU_f, data=test)
+anova(tw.ano1c)
+
+
+
+# 8.상관분석
+# 단순상관분석의 분석 방법
+# (1) cor 함수를 이용한 상관분석 
+# ① 변수 만들기 #page130
+# ‘건강한 몸의 느낌’ 변수
+test$BF <- (test$Q1 + test$Q2 + test$Q3 + test$Q4 + test$Q5) / 5
+# ‘건강한 자기관리’ 변수 
+attach(test)
+test$BM <- (Q6 + Q7 + Q8 + Q9 + Q10) / 5
+detach(test)
+# ‘행복’ 변수
+attach(test)
+test <- transform(test, Happiness = (Q11 + Q12 + Q13 + Q14 + Q15) / 5)
+detach(test)
+# ‘평화’ 변수
+attach(test)
+test$Peace <- (Q16 + Q17 + Q18 + Q19 + Q20) / 5
+detach(test)
+
+# ② cor 함수를 이용한 상관분석 #page131
+cor(test[c("BM","BF","Happiness","Peace")], use="pairwise.complete.obs") 
+
+# 분석하려는 변수만을 객체로 만들어 분석하는 방법 #page132
+cor.var <- test[c("BM", "BF", "Happiness", "Peace")]
+cor(cor.var, use = "pairwise.complete.obs")
+# 상관계수의 소수점 자리수 조정 
+round(cor(test[c("BM","BF","Happiness","Peace")], use="pairwise.complete.obs"), 2)
+
+# ③ 두 변수 간의 상관계수와 유의도 출력 #page133
+cor.test(test$BM, test$Happiness)
+
+
+
+# 9.회귀분석
+# 1)단순회귀분석의 분석 방법
+# (1) 연구가설 1의 검증 #page135
+# ① 단순회귀분석
+regression1_1 <- lm(Happiness ~ BM, data = test)
+summary(regression1_1)
+# 별도의 객체로 저장하지 않는 분석 방법: 위의 명령문과 같은 결과가 산출됨
+summary(lm(Happiness ~ BM, data = test))
+
+# (2) 연구가설 2의 검증 #page138
+regression1_2 <- lm(Happiness ~ BF, data = test)
+summary(regression1_2)
+
+
+
+# 2)다중회귀분석의 분석 방법
+# (1) 연구가설의 검증
+# ① 다중회귀분석 #page140
+regression2 <- lm(Happiness ~ BM + BF + Peace, data=test)
+summary(regression2)
+
+# ② 표준화 계수값 구하기 #page142
+#install.packages("QuantPsyc")
+library(QuantPsyc)
+lm.beta(regression2)
+round(lm.beta(regression2),3)      # 표준화 계수값을 소수점 3자리로 지정
+
+# ③ 다중공선성 진단을 위한 VIF 값 구하기 #page143
+#install.packages("car")
+library(car)
+vif(regression2)
+
+
+
+# 3)더미변수를 이용한 회귀분석의 분석 방법
+# ① 더미변수 만들기 #page145
+test$Gender_f.dummy <- ifelse(test$Gender == 2, 1, 0)
+test$EDU_2.dummy <- ifelse(test$EDU == 2, 1, 0)
+test$EDU_3.dummy <- ifelse(test$EDU == 3, 1, 0)
+test$EDU_4.dummy <- ifelse(test$EDU == 4, 1, 0)
+# 더미변수 확인
+table(test$Gender) 
+table(test$Gender_f.dummy)
+table(test$EDU)
+table(test$EDU_2.dummy);table(test$EDU_3.dummy);table(test$EDU_4.dummy)
+
+# ② 더미변수를 이용한 다중회귀분석 #page147
+regression4 <- lm(Happiness ~ BM + BF + Peace + Gender_f.dummy + test$EDU_2.dummy + test$EDU_3.dummy + test$EDU_4.dummy, data = test)
+summary(regression4)
+# 표준화 계수 출력
+library(QuantPsyc)
+lm.beta(regression4)
+
+```
