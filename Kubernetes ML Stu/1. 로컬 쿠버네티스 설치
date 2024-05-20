@@ -1,0 +1,66 @@
+
+# 1. 로컬 쿠버네티스 환경 설정하기
+
+## kubectl 설치하기
+
+`kubectl` 은 쿠버네티스에 대한 명령어의 실행을 지원하는 명령 줄 도구다.
+
+
+**mac - ssh나 terminal 열기**
+
+```
+curl -LO https://dl.k8s.io/release/v1.22.4/bin/darwin/
+аа64/kubectl
+```
+
+
+**Kubectl CLI 설치**
+
+```
+sudo install kubectl /usr/local/bin/kubectl
+
+or
+
+brew install kubectl /usr/local/bin/kubectl
+```
+
+
+**kubectl cli 설치 확인**
+
+```
+kubectl version --client
+```
+
+
+## 맥에서 minikube 설치하기
+
+### 준비
+
+```
+1. 도커 웹사이트, 또는 다음링크(https://www.docker.com/products/docker-desktop) 에서 도커 데스크톱을 다운로드 하고 설치한다.
+2. 도커가 준비되면 다음명령으로 잘 설치됐는지 확인한다. 다음 명령을 실행하기 전에 도커가 실행중이어야 한다.
+
+docker version
+```
+
+
+**애플 실리콘 명령 설치**
+
+```
+curl -Lo minikube https://storage-googleapis.com/minikube/releases/v1.24.0/minikube-darwin-arm64
+```
+
+
+**다운로드한 파일을 /usr/local/bin 폴더로 이동하고, 다음 명령을 실행해 다운로드한 파일을 실행 가능한 파일로 만든다. **
+
+```
+sudo mv minikube /usr/local/bin
+sudo chmod +x /usr/local/bin/minikube
+```
+
+
+**다음과 같이 minikube 버전을 확인**
+
+```
+minikube version
+```
