@@ -64,3 +64,40 @@ sudo chmod +x /usr/local/bin/minikube
 ```
 minikube version
 ```
+
+
+## 로컬 쿠버네티스 클러스터 설치하기
+
+### CPU, 디스크, 메모리를다음명령으로minikube 설정을 구성
+
+```
+minikube config set cpus 8
+minikube config set memory 32GB
+minikube config set disk-size 64GB
+```
+
+
+**유효 설정 검증**
+
+```
+minikube config view
+```
+
+
+**쿠버네티스 클러스터 시작**
+
+```
+minikube start --kubernetes-version=1.22.4
+```
+
+
+**쿠버네티스 플랫폼이 준비됐다는 성공 메시지 확인**
+
+
+
+
+**모든 파드가 실행 상태인지 확인**
+
+```
+kubectl get pods --all-namespaces
+```
