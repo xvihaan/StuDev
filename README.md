@@ -11,6 +11,7 @@ It's a space where you build up your computing knowledge.
 3. 빅데이터분석 (Bigdata)
 4. 소프트웨어공학 (Software Engineerig)
 5. 데이터베이스 (DataBase) `new`
+6. 자격증 - 정보처리기사 | AICE `new`
 
 ## Develop
 1. 파이토치 트랜스포머 컴퓨터비전 (Pytorch Transformer ComputerVision)
