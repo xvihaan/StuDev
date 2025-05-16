@@ -20,4 +20,4 @@ It's a space where you build up your computing knowledge.
 2. 쿠버네티스와 머신러닝 (Kubernetes ML)
 3. AI/LLM 모델 관련 개념과 응용 과정 (AI/LLM Model, RAG, MMM)
 4. Whisper 모델로 인공지능 음성 비서 만들기 (AI voice assistant with the Whisper model)
-5. Sentence-BERT 모델로 한국어 텍스트를 분류하는 자연어 처리 기능 만들기
+5. Sentence-BERT 모델로 한국어 텍스트를 분류하는 자연어 처리 기능 만들기 (Building a NLP to Classify Korean Text with the Sentence-BERT Model)
